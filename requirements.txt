@@ -1,0 +1,15 @@
+pandas>=1.3
+numpy>=1.21
+pyarrow>=8.0
+matplotlib>=3.5
+
+# Stage 2 / 3. Install the CUDA torch wheel yourself (Colab already has one).
+# tensorboard is optional: models/train.py skips event logging without it and
+# still writes metrics.jsonl, curves.png and final_metrics.json.
+# gin-config is only required for Meta's own train.py, not for ours.
+# fbgemm_gpu / torchrec match Ubuntu 22.04 + CUDA 12.4 + Python 3.10; on any
+# other stack utils/meta_repo.py supplies a dense fallback for the three
+# fbgemm ops HSTU calls.
+# torch
+# tensorboard
+# gin-config
