@@ -16,10 +16,20 @@ Google Drive path. A Colab container is disposable; Drive is not::
       checkpoints/best.pt  best headline (recommended NDCG@10) so far
 
 Resume is the default. If ``checkpoints/last.pt`` exists the run picks up model,
-optimizer, AMP scaler, epoch, step, best-so-far, and RNG state, so a preempted A100
-costs the time since the last save and nothing more. Checkpoints are written to a
+optimizer, AMP scaler, step, best-so-far, and RNG state. Checkpoints are written to a
 temporary file and then renamed, because a process killed halfway through a write to
 Drive would otherwise leave a truncated file where the only copy used to be.
+
+**Resume granularity is one epoch, not one step.** A mid-epoch save records the epoch
+it is inside, so restarting re-walks that epoch from its first batch. Nothing learned
+is thrown away - the weights and optimizer state are exactly as of the last save, so
+at most ``--save-every-steps`` steps of *learning* are lost - but up to a full epoch of
+*wall clock* can be repeated, because the sampler position is not stored. The LR
+schedule keys off ``global_step``, so it stays continuous across a resume; replaying
+part of an epoch therefore advances the schedule slightly faster than the epoch count
+implies, and ``lr_at`` clamps at the end of the cosine rather than running past it.
+Saving the sampler offset would make resume step-exact; it is not worth the complexity
+at this dataset size, where an epoch is ~400 steps.
 
 Defaults are sized so ``--size base`` runs on an L4 (24GB) without OOM; an A100 40GB
 takes roughly double the batch. The knobs for when it does not fit, and for when the
