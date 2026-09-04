@@ -34,9 +34,9 @@ pictures/
 # ── Notes and drafts, not part of the repo ────────────────────────────────
 docs/
 README.md
-# Generator for colab/hstu_train_colab.ipynb. The notebook is the artifact;
+# Generator for colab/hstu_colab.ipynb. The notebook is the artifact;
 # shipping both would give it two sources of truth.
-colab/_build_train_notebook.py
+colab/_build_notebook.py
 
 # ── Python ────────────────────────────────────────────────────────────────
 __pycache__/
